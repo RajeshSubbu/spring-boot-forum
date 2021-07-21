@@ -3,13 +3,13 @@ package com.programming.techie.springredditclone.service;
 import com.programming.techie.springredditclone.dto.PostRequest;
 import com.programming.techie.springredditclone.dto.PostResponse;
 import com.programming.techie.springredditclone.exceptions.PostNotFoundException;
-import com.programming.techie.springredditclone.exceptions.SubredditNotFoundException;
+import com.programming.techie.springredditclone.exceptions.DepartmentNotFoundException;
 import com.programming.techie.springredditclone.mapper.PostMapper;
 import com.programming.techie.springredditclone.model.Post;
-import com.programming.techie.springredditclone.model.Subreddit;
+import com.programming.techie.springredditclone.model.Department;
 import com.programming.techie.springredditclone.model.User;
 import com.programming.techie.springredditclone.repository.PostRepository;
-import com.programming.techie.springredditclone.repository.SubredditRepository;
+import com.programming.techie.springredditclone.repository.DepartmentRepository;
 import com.programming.techie.springredditclone.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,15 +28,15 @@ import static java.util.stream.Collectors.toList;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final SubredditRepository subredditRepository;
+    private final DepartmentRepository DepartmentRepository;
     private final UserRepository userRepository;
     private final AuthService authService;
     private final PostMapper postMapper;
 
     public void save(PostRequest postRequest) {
-        Subreddit subreddit = subredditRepository.findByName(postRequest.getSubredditName())
-                .orElseThrow(() -> new SubredditNotFoundException(postRequest.getSubredditName()));
-        postRepository.save(postMapper.map(postRequest, subreddit, authService.getCurrentUser()));
+        Department Department = DepartmentRepository.findByName(postRequest.getDepartmentName())
+                .orElseThrow(() -> new DepartmentNotFoundException(postRequest.getDepartmentName()));
+        postRepository.save(postMapper.map(postRequest, Department, authService.getCurrentUser()));
     }
 
     @Transactional(readOnly = true)
@@ -55,10 +55,10 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getPostsBySubreddit(Long subredditId) {
-        Subreddit subreddit = subredditRepository.findById(subredditId)
-                .orElseThrow(() -> new SubredditNotFoundException(subredditId.toString()));
-        List<Post> posts = postRepository.findAllBySubreddit(subreddit);
+    public List<PostResponse> getPostsByDepartment(Long DepartmentId) {
+        Department Department = DepartmentRepository.findById(DepartmentId)
+                .orElseThrow(() -> new DepartmentNotFoundException(DepartmentId.toString()));
+        List<Post> posts = postRepository.findAllByDepartment(Department);
         return posts.stream().map(postMapper::mapToDto).collect(toList());
     }
 
