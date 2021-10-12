@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/Department")
+@RequestMapping("/api/department")
 @AllArgsConstructor
-@Slf4j
 public class DepartmentController {
 
     private final DepartmentService DepartmentService;
